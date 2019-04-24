@@ -18,17 +18,17 @@
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script type="text/javascript">
-        var colors = {
-            0: 'green',
-            1: 'red'
-        }
-        var ballId = 0;
-        var removedCount = 0;
-        var startTime;
-        var endTime;
-        var isAllRed;
-
 		$(function() {
+            var colors = {
+                0: 'green',
+                1: 'red'
+            }
+            var ballId = 0;
+            var removedCount = 0;
+            var startTime;
+            var endTime;
+            var isAllRed;
+
 			class Ball {
 				constructor(ball$, canvas$, id) {
 					this.ball$ = ball$;
