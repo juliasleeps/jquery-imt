@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		section {
+			width: 800px;
+			height: 600px;
+			position: relative;
+			border: 1px dashed lightgreen;
+		}
+		div {
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			position: absolute;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        var colors = {
+            0: 'green',
+            1: 'red'
+        }
+        var ballId = 0;
+        var removedCount = 0;
+        var startTime;
+        var endTime;
+        var isAllRed;
+
+		$(function() {
+			class Ball {
+				constructor(ball$, canvas$, id) {
+					this.ball$ = ball$;
+                    this.canvas$ = canvas$;
+                    this.id = id;
+					this.verticalDirection = 'BOTTOM';
+                    this.horizontalDirection = 'RIGTH';
+                    this.color = colors[Math.floor(Math.random() * (1 - 0 + 1)) + 0];
+					this.top = Math.floor(Math.random() * (this.canvas$.height() - this.ball$.height() - 0 + 1)) + 0;
+                    this.left = Math.floor(Math.random() * (this.canvas$.width() - this.ball$.width() - 0 + 1)) + 0;
+                    this.ball$.css('backgroundColor', this.color);
+				}
+
+				changeDirection() {
+					if (this.ball$.position().left + this.ball$.width() === this.canvas$.width()) {
+						this.horizontalDirection = 'LEFT';
+					} else if (this.ball$.position().left === 0) {
+						this.horizontalDirection = 'RIGHT';
+					}
+
+					if (this.ball$.position().top + this.ball$.height() === this.canvas$.height()) {
+						this.verticalDirection = 'TOP';
+					} else if (this.ball$.position().top === 0) {
+						this.verticalDirection = 'BOTTOM';
+					}
+				}
+
+				move() {
+					this.changeDirection();
+
+					if (this.horizontalDirection === 'LEFT') {
+						this.ball$.css('left', this.left -- + 'px');
+					} else {
+						this.ball$.css('left', this.left ++ + 'px');
+					}
+
+					if (this.verticalDirection === 'TOP') {
+						this.ball$.css('top', this.top -- + 'px');
+					} else {
+						this.ball$.css('top', this.top ++ + 'px');
+					}
+                }
+                
+                removeBall() {
+                    this.ball$.remove();
+                    balls = balls.filter(b => b.id !== this.id);
+                    removedCount++;
+                    checkBallsLength();
+                    checkAllBallsRed();
+                    if(isAllRed){
+                        changeAllRedtoGreen();
+                    }
+                }
+			}
+
+			var canvas$ = $('#canvas');
+			var balls = [];
+			var intervalId;
+
+			$('#addBall').click(function() {
+                addBall();
+			});
+
+			$('button#start').click(function() {
+                startTime = Date.now();
+				if (!intervalId) {
+					intervalId = setInterval(function() {
+						balls.forEach(function(ball) {
+							ball.move()
+						})
+					}, 10);
+				}
+			});
+
+			$('button#stop').click(function() {
+				clearInterval(intervalId);
+                intervalId = null;
+            }) 
+            
+            $('button#game').click(function(){
+                for (let i = 0; i < 15; i++){
+                    addBall();
+                };
+            });
+
+            function addBall(){
+                var ball$ = $('<div></div>');
+                canvas$.append(ball$);
+                var ball = new Ball(ball$, canvas$, ballId);
+                ballId++;
+                ball$.click(function(){
+                    if (ball.color === colors[0]){
+                       ball.removeBall(); 
+                    } else if(ball.color === colors[1]){
+                        addBall();
+                        addBall();
+                    } 
+                })
+                balls.push(ball);
+            };
+
+            function millisToMinutesAndSeconds(millis) {
+                var minutes = Math.floor(millis / 60000);
+                var seconds = ((millis % 60000) / 1000).toFixed(0);
+                return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+            }
+
+            function checkBallsLength(){
+                if(balls.length === 0){
+                    endTime = Date.now();
+                    alert(`You removed ${removedCount} balls! It took ${millisToMinutesAndSeconds(endTime - startTime)}`)
+                    reset();
+                }
+            }
+
+            function checkAllBallsRed(){
+                isAllRed = balls.every(ball => ball.color === colors[1]);
+            }
+
+            function changeAllRedtoGreen(){
+                balls.forEach(ball => {
+                    ball.color = colors[0];
+                    ball.ball$.css('backgroundColor', colors[0]);
+                });
+            }
+
+            function reset(){
+                ballId = 0;
+                removedCount = 0;
+                startTime = Date.now();
+                endTime = null;
+            }
+
+		});
+	</script>
+</head>
+<body>
+	<button id='addBall'>Add ball</button>
+	<button id='start'>Start</button>
+	<button id='stop'>Stop</button>
+	<button id='game'>Game - 15 balls</button>
+	<section id="canvas"></section>
+</body>
+</html>

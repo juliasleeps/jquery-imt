@@ -45,18 +45,7 @@ $(function () {
 
     }
     var ballArray = [];
-
-    // var canvasWidth = $('.canvas').width();
-    // var boxWidth = $('.box').width();
-    // var canvasHeight = $('.canvas').height();
-    // var boxHeight = $('.box').height();
-
-    // var indentW = 0;
-    // var indentY = 0;
-    // var directionX = 'RIGTH';
-    // var directionY = 'DOWN';
     var intervalId;
-
 
     $('.run').click(function () {
         if (!intervalId) {
